@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MyPlantDiaryKTPrep</string>
+    <string name="latitude">Latitude</string>
+    <string name="zeropointzero">0.0</string>
+    <string name="longitude">Longitude</string>
+    <string name="plantName">Plant Name</string>
+    <string name="description">Description</string>
+    <string name="dateplanted">Date Planted</string>
 </resources>
