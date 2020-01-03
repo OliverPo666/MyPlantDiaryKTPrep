@@ -1,112 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.MainFragment">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/lblLatitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/latitude"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="viewmodel"
+            type="app.plantdiary.myplantdiaryktprep.ui.main.MainViewModel" />
+    </data>
 
-    <TextView
-        android:id="@+id/lblLatitudeValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:text="@string/zeropointzero"
-        app:layout_constraintStart_toEndOf="@+id/lblLongitude"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/lblLongitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/longitude"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblLatitude" />
-
-    <TextView
-        android:id="@+id/lblLongitudeValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:text="@string/zeropointzero"
-        app:layout_constraintStart_toEndOf="@+id/lblLongitude"
-        app:layout_constraintTop_toBottomOf="@+id/lblLatitudeValue" />
-
-    <Spinner
-        android:id="@+id/spnSpecimens"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/lblLongitudeValue"
-        tools:layout_editor_absoluteX="1dp" />
+        android:layout_height="match_parent"
+        tools:context=".ui.main.MainFragment">
 
-    <AutoCompleteTextView
-        android:id="@+id/actPlants"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/plantName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spnSpecimens" />
 
-    <EditText
-        android:id="@+id/txtDescription"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/description"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/actPlants" />
-
-    <EditText
-        android:id="@+id/txtDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/dateplanted"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/txtDate"
-        tools:layout_editor_absoluteX="1dp">
-
-        <ImageButton
-            android:id="@+id/btnTakePhoto"
+        <TextView
+            android:id="@+id/lblLatitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_photo" />
+            android:text="@string/latitude"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnSave"
+        <TextView
+            android:id="@+id/lblLatitudeValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_save" />
+            android:layout_marginLeft="5dp"
+            android:text="@{viewmodel.names}"
+            app:layout_constraintStart_toEndOf="@+id/lblLongitude"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnLogon"
+        <TextView
+            android:id="@+id/lblLongitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_logon" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginTop="5dp"
+            android:text="@string/longitude"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblLatitude" />
+
+        <TextView
+            android:id="@+id/lblLongitudeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/zeropointzero"
+            app:layout_constraintStart_toEndOf="@+id/lblLongitude"
+            app:layout_constraintTop_toBottomOf="@+id/lblLatitudeValue" />
+
+        <Spinner
+            android:id="@+id/spnSpecimens"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/lblLongitudeValue"
+            tools:layout_editor_absoluteX="1dp" />
+
+        <AutoCompleteTextView
+            android:id="@+id/actPlants"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/plantName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spnSpecimens" />
+
+        <EditText
+            android:id="@+id/txtDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/description"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/actPlants" />
+
+        <EditText
+            android:id="@+id/txtDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/dateplanted"
+            android:inputType="date"
+            android:text="@{viewmodel.names}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/txtDate"
+            tools:layout_editor_absoluteX="1dp">
+
+            <ImageButton
+                android:id="@+id/btnTakePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="addName"
+                android:src="@drawable/ic_photo" />
+
+            <ImageButton
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_save" />
+
+            <ImageButton
+                android:id="@+id/btnLogon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_logon" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
