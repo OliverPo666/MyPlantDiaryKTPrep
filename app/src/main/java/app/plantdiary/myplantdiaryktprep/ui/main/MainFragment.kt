@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import app.plantdiary.myplantdiaryktprep.R
 import app.plantdiary.myplantdiaryktprep.databinding.MainFragmentBinding
+import kotlinx.android.synthetic.main.main_fragment.*
 
 class MainFragment : Fragment() {
 
@@ -26,6 +27,10 @@ class MainFragment : Fragment() {
         // not working well in fragment... may need to move to activity.
         val binding = MainFragmentBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this.activity;
+
+
+
+
         return binding.root;
         // return inflater.inflate(R.layout.main_fragment, container, false)
     }
@@ -37,12 +42,19 @@ class MainFragment : Fragment() {
         viewModel.names.observe(this,
             Observer {
                 name -> Toast.makeText(context, name, Toast.LENGTH_LONG).show();
+                txtDescription.setText(name)
             })
+
+        btnSave.setOnClickListener {
+            Toast.makeText(context, "Save", Toast.LENGTH_LONG).show()
+        }
+
 
     }
 
     public fun addName(v:View?) {
         viewModel.updateNames();
     }
+
 
 }

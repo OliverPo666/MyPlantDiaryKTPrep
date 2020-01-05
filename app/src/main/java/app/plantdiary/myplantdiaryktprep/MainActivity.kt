@@ -3,7 +3,9 @@ package app.plantdiary.myplantdiaryktprep
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import app.plantdiary.myplantdiaryktprep.ui.main.MainFragment
+import kotlinx.android.synthetic.main.main_fragment.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var fragment : MainFragment
@@ -17,6 +19,7 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, fragment)
                 .commitNow()
         }
+
 
     }
 
