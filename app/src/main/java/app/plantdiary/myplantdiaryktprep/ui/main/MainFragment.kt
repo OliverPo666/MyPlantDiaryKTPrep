@@ -33,6 +33,7 @@ class MainFragment : Fragment() {
         viewModel.plants.observe(this, Observer {
             // do something here to wire up the objects, from the feed of JSON data, to be the autocomplete's data source.
             plants ->  actPlants.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, plants))
+            var i = 1 + 1
         })
     }
 

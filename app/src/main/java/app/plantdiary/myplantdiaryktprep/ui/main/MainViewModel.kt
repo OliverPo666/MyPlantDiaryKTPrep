@@ -32,6 +32,7 @@ class MainViewModel : ViewModel() {
             ) {
                 val body = response?.body()
                 val size = body?.size;
+                _plants.value = body
             }
 
             override fun onFailure(call: Call<ArrayList<Plant>>, t: Throwable) {
