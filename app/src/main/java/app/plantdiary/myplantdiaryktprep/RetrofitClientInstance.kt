@@ -3,10 +3,10 @@ package app.plantdiary.myplantdiaryktprep
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitClientInstance {
+object RetrofitClientInstance {
 
     private var retrofit: Retrofit? = null
-    private val BASE_URL = "http://www.plantplaces.com"
+    private val BASE_URL = "https://www.plantplaces.com"
 
     val retrofitInstance: Retrofit?
         get() {
