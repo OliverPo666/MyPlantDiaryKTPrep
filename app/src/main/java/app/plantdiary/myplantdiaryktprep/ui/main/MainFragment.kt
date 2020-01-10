@@ -1,9 +1,13 @@
 package app.plantdiary.myplantdiaryktprep.ui.main
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +30,8 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var locationViewModel: LocationViewModel
     private val LOCATION_REQUEST_CODE = 1997
+    private val IMAGE_CAPTURE_REQUEST_CODE = 1998
+    private val CAMERA_REQUEST_CODE = 1999
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +50,38 @@ class MainFragment : Fragment() {
             var i = 1 + 1
             prepRequestLocationUpdates()
         })
+
+        btnTakePhoto.setOnClickListener{
+            prepTakePhoto()
+        }
+    }
+
+    private fun prepTakePhoto() {
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            takePhoto()
+        } else {
+            val permissionRequest = arrayOf(Manifest.permission.CAMERA)
+            requestPermissions(permissionRequest, CAMERA_REQUEST_CODE)
+        }
+    }
+
+    private fun takePhoto() {
+        Toast.makeText(context, "Click", Toast.LENGTH_LONG).show()
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also{
+            takePictureIntent -> takePictureIntent.resolveActivity(context!!.packageManager)?.also {
+                startActivityForResult(takePictureIntent, IMAGE_CAPTURE_REQUEST_CODE)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_CAPTURE_REQUEST_CODE) {
+                val imageBitmap = data!!.extras!!.get("data") as Bitmap
+                imgPlant.setImageBitmap(imageBitmap)
+            }
+        }
     }
 
     private fun prepRequestLocationUpdates() {
@@ -78,11 +116,20 @@ class MainFragment : Fragment() {
                 }
 
             }
+            CAMERA_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    takePhoto()
+                } else {
+                    Toast.makeText(context, "Unable to show GPS without location permission", Toast.LENGTH_LONG).show()
+                }
+            }
             else -> {
 
             }
         }
 
     }
+
+
 
 }
