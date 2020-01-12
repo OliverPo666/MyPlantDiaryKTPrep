@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +21,9 @@ import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
 import app.plantdiary.myplantdiaryktprep.R
 import kotlinx.android.synthetic.main.main_fragment.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainFragment : Fragment() {
 
@@ -32,6 +36,7 @@ class MainFragment : Fragment() {
     private val LOCATION_REQUEST_CODE = 1997
     private val IMAGE_CAPTURE_REQUEST_CODE = 1998
     private val CAMERA_REQUEST_CODE = 1999
+    private lateinit var currentPhotoPath: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -126,6 +131,15 @@ class MainFragment : Fragment() {
             else -> {
 
             }
+        }
+
+    }
+
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir:File? = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("PlantDiary${timeStamp}", ".jpg", storageDir).apply{
+            currentPhotoPath = absolutePath
         }
 
     }
