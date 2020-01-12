@@ -16,12 +16,14 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
 import app.plantdiary.myplantdiaryktprep.R
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +38,7 @@ class MainFragment : Fragment() {
     private val LOCATION_REQUEST_CODE = 1997
     private val IMAGE_CAPTURE_REQUEST_CODE = 1998
     private val CAMERA_REQUEST_CODE = 1999
+    private val SAVE_IMAGE_REQUEST_CODE=2000
     private lateinit var currentPhotoPath: String
 
     override fun onCreateView(
@@ -74,7 +77,26 @@ class MainFragment : Fragment() {
         Toast.makeText(context, "Click", Toast.LENGTH_LONG).show()
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also{
             takePictureIntent -> takePictureIntent.resolveActivity(context!!.packageManager)?.also {
-                startActivityForResult(takePictureIntent, IMAGE_CAPTURE_REQUEST_CODE)
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // fall back to thumbnail.
+                    null
+                }
+                if (takePictureIntent == null) {
+                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE_REQUEST_CODE)
+                } else {
+                    photoFile?.also {
+                        val photoURI = FileProvider.getUriForFile(
+                            activity!!.applicationContext,
+                            "com.example.android.fileprovider",
+                            it
+                        )
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, SAVE_IMAGE_REQUEST_CODE)
+                    }
+
+                }
             }
         }
     }
@@ -85,6 +107,9 @@ class MainFragment : Fragment() {
             if (requestCode == IMAGE_CAPTURE_REQUEST_CODE) {
                 val imageBitmap = data!!.extras!!.get("data") as Bitmap
                 imgPlant.setImageBitmap(imageBitmap)
+            }
+            if (requestCode == SAVE_IMAGE_REQUEST_CODE) {
+                Toast.makeText(context, "Image Saved", Toast.LENGTH_LONG).show()
             }
         }
     }
