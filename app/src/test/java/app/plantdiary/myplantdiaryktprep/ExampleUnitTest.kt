@@ -1,5 +1,6 @@
 package app.plantdiary.myplantdiaryktprep
 
+import app.plantdiary.myplantdiaryktprep.ui.main.MainViewModel
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -14,4 +15,17 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+    fun fetchMaple_ReturnsMaple () {
+        var mvm:MainViewModel = MainViewModel()
+        mvm.fetchPlants("Maple")
+        assertNotNull("BRandan")
+        assertTrue(true)
+        assertNotNull(mvm.plantsArray)
+        assertTrue(mvm.plantsArray!!.size > 0)
+
+    }
+
+
 }
