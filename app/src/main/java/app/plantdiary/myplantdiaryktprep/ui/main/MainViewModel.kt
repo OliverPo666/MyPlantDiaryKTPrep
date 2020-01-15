@@ -11,7 +11,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
 
     // livedata goes in here for plants.
     private var _plants = MutableLiveData<ArrayList<Plant>>()
@@ -55,6 +54,9 @@ class MainViewModel : ViewModel() {
                 val body = response?.body()
                 val size = body?.size;
                 _plantsArray = body
+                _plants.value = body
+                // _plants.postValue(body)
+                var i = 1 + 1
             }
 
             override fun onFailure(call: Call<ArrayList<Plant>>, t: Throwable) {
