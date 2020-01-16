@@ -30,15 +30,4 @@ class ExampleInstrumentedTest {
         assertEquals("app.plantdiary.myplantdiaryktprep", appContext.packageName)
     }
 
-    @Test
-    fun testLocationUpdates() {
-        // TODO mock application here... or get it from context.
-        var locationVm = LocationViewModel(InstrumentationRegistry.getInstrumentation().targetContext)
-        locationVm.getLocationData().observeForever {
-            assertTrue(it.latitude.toDouble() > -90)
-            assertTrue(it.longitude.toDouble() > -180)
-
-        }
-
-    }
 }

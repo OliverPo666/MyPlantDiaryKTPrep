@@ -1,12 +1,10 @@
 package app.plantdiary.myplantdiaryktprep
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 
-class LocationViewModel(context: Context) : ViewModel() {
+class LocationViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val locationData = LocationLiveData(context)
+    private val locationData = LocationLiveData(application)
     fun getLocationData() = locationData;
 }

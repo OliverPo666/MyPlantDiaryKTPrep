@@ -43,4 +43,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     // testImplementation 'android.arch.core:core-testing:1.0.0-alpha3'
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
+    testImplementation 'androidx.arch.core:core-testing:2.0.0'
 }
