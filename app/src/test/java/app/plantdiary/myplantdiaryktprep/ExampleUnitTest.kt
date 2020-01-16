@@ -24,17 +24,6 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun fetchMaple_ReturnsMaple () {
-        var mvm:MainViewModel = MainViewModel()
-        mvm.fetchPlants("Maple")
-        assertNotNull("BRandan")
-        assertTrue(true)
-        assertNotNull(mvm.plantsArray)
-        assertTrue(mvm.plantsArray!!.size > 0)
-
-    }
-
-    @Test
     fun fetchMaple_returnsObservableMaple() {
         var mvm:MainViewModel = MainViewModel()
         mvm.plants.observeForever {
