@@ -3,8 +3,10 @@ package app.plantdiary.myplantdiaryktprep.ui.main
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.Intent.EXTRA_MIME_TYPES
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
@@ -39,6 +41,7 @@ class MainFragment : Fragment() {
     private val IMAGE_CAPTURE_REQUEST_CODE = 1998
     private val CAMERA_REQUEST_CODE = 1999
     private val SAVE_IMAGE_REQUEST_CODE=2000
+    private val IMAGE_GALLERY_REQUEST_CODE=2001
     private lateinit var currentPhotoPath: String
 
     override fun onCreateView(
@@ -62,6 +65,19 @@ class MainFragment : Fragment() {
         btnTakePhoto.setOnClickListener{
             prepTakePhoto()
         }
+
+        btnLogon.setOnClickListener {
+            prepOpenGallery()
+        }
+    }
+
+    private fun prepOpenGallery() {
+        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+            type = "image/*"
+//            val mimeTypes = arrayOf("image/*")
+//            putExtra(EXTRA_MIME_TYPES, mimeTypes)
+            startActivityForResult(this, IMAGE_GALLERY_REQUEST_CODE)
+        }
     }
 
     private fun prepTakePhoto() {
@@ -76,26 +92,24 @@ class MainFragment : Fragment() {
     private fun takePhoto() {
         Toast.makeText(context, "Click", Toast.LENGTH_LONG).show()
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also{
-            takePictureIntent -> takePictureIntent.resolveActivity(context!!.packageManager)?.also {
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // fall back to thumbnail.
-                    null
-                }
-                if (takePictureIntent == null) {
-                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE_REQUEST_CODE)
-                } else {
-                    photoFile?.also {
-                        val photoURI = FileProvider.getUriForFile(
-                            activity!!.applicationContext,
-                            "com.example.android.fileprovider",
-                            it
-                        )
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        startActivityForResult(takePictureIntent, SAVE_IMAGE_REQUEST_CODE)
-                    }
-
+            takePictureIntent -> takePictureIntent.resolveActivity(context!!.packageManager)
+            val photoFile: File? = try {
+                createImageFile()
+            } catch (ex: IOException) {
+                // fall back to thumbnail.
+                null
+            }
+            if (takePictureIntent == null) {
+                startActivityForResult(takePictureIntent, IMAGE_CAPTURE_REQUEST_CODE)
+            } else {
+                photoFile?.also {
+                    val photoURI = FileProvider.getUriForFile(
+                        activity!!.applicationContext,
+                        "com.example.android.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, SAVE_IMAGE_REQUEST_CODE)
                 }
             }
         }
@@ -107,9 +121,13 @@ class MainFragment : Fragment() {
             if (requestCode == IMAGE_CAPTURE_REQUEST_CODE) {
                 val imageBitmap = data!!.extras!!.get("data") as Bitmap
                 imgPlant.setImageBitmap(imageBitmap)
-            }
-            if (requestCode == SAVE_IMAGE_REQUEST_CODE) {
+            } else if (requestCode == SAVE_IMAGE_REQUEST_CODE) {
                 Toast.makeText(context, "Image Saved", Toast.LENGTH_LONG).show()
+            } else if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
+                val selectedImage = data!!.data
+                val source = ImageDecoder.createSource(activity!!.contentResolver, selectedImage!!)
+                val bitmap = ImageDecoder.decodeBitmap(source)
+                imgPlant.setImageBitmap(bitmap)
             }
         }
     }

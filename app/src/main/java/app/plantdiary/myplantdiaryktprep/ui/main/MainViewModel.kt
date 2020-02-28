@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.RetrofitClientInstance
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
 import app.plantdiary.myplantdiaryktprep.dto.Plant
+import app.plantdiary.myplantdiaryktprep.service.PlantService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class MainViewModel()  : ViewModel() {
+    var  plantService: PlantService = PlantService()
 
     // livedata goes in here for plants.
     private var _plants = MutableLiveData<ArrayList<Plant>>()
@@ -43,27 +45,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun fetchPlants(plantName:String) {
-        // TODO move this to a specialized class, perhaps in service or DAO layer.
-        val service = RetrofitClientInstance.retrofitInstance?.create(IPlantDAO::class.java)
-        val call = service?.getPlants(plantName)
-        call?.enqueue(object : Callback<ArrayList<Plant>> {
-            override fun onResponse(
-                call: Call<ArrayList<Plant>>,
-                response: Response<ArrayList<Plant>>
-            ) {
-                val body = response?.body()
-                val size = body?.size;
-                _plantsArray = body
-                _plants.value = body
-                // _plants.postValue(body)
-                var i = 1 + 1
-            }
-
-            override fun onFailure(call: Call<ArrayList<Plant>>, t: Throwable) {
-                val i = 1 + 1;
-                val j = 2 + 2;
-            }
-        })
+        plantService.fetchPlants(plantName)
     }
 
     var plants:MutableLiveData<ArrayList<Plant>>

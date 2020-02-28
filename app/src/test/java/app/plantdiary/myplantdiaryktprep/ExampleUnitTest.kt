@@ -1,10 +1,16 @@
 package app.plantdiary.myplantdiaryktprep
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import app.plantdiary.myplantdiaryktprep.dto.Plant
+import app.plantdiary.myplantdiaryktprep.service.PlantService
 import app.plantdiary.myplantdiaryktprep.ui.main.MainViewModel
+import io.mockk.*
+import io.mockk.impl.annotations.SpyK
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestRule
 
@@ -14,14 +20,22 @@ import org.junit.rules.TestRule
  * See [testing documentation](http://d.android.com/tools/testing).
  *
  * Added some more tests.
- * 
+ *
  */
 class ExampleUnitTest {
 
     lateinit var mvm:MainViewModel
 
+    // @SpyK
+    var plantService = mockk<PlantService>()
+
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init()
+    }
 
     @Test
     fun addition_isCorrect() {
@@ -31,6 +45,7 @@ class ExampleUnitTest {
     @Test
     fun fetchMaple_returnsObservableMaple() {
         mvm = MainViewModel()
+
         mvm.plants.observeForever {
             assertNotNull(it)
             assertTrue(it.size >0)
@@ -77,7 +92,7 @@ class ExampleUnitTest {
     }
 
     private fun whenSearchForQuercus() {
-        mvm.fetchPlants("Redbud")
+        mvm.fetchPlants("Quercus")
     }
 
     private fun thenReturnTwoOaks() {
@@ -109,5 +124,37 @@ class ExampleUnitTest {
         mvm.plants.observeForever {
             assertEquals(0, it.size)
         }
+    }
+
+    @Test
+    fun searchForQuercus_returnsMultipleOaksMock() {
+        givenAFeedOfMockedPlantDataAreAvailable()
+        whenSearchForQuercus()
+        thenReturnTwoOaks()
+        thenVerifyFetchPlantsInvoked()
+    }
+
+    private fun thenVerifyFetchPlantsInvoked() {
+        verify {
+            plantService.fetchPlants("Quercus")
+        }
+        verify(exactly = 0) {
+            plantService.fetchPlants("Maple")
+        }
+        confirmVerified(plantService)
+    }
+
+    private fun givenAFeedOfMockedPlantDataAreAvailable() {
+        mvm = MainViewModel()
+        var allPlantsLiveData = MutableLiveData<ArrayList<Plant>>()
+        var allPlants = ArrayList<Plant>()
+        var redbud = Plant(83, "Cercis", "canadensis",  "","Eastern Redbud")
+        allPlants.add(redbud)
+        var redOak = Plant(10, "Quercus", "alba", "", "White Oak")
+        allPlants.add(redOak)
+        var whiteOak = Plant(11, "Quercus", "alba",  "","Red Oak")
+        allPlantsLiveData.postValue(allPlants)
+        every{plantService.fetchPlants(any<String>())} returns allPlantsLiveData
+        mvm.plantService = plantService
     }
 }
