@@ -59,11 +59,12 @@ class MainViewModel()  : ViewModel() {
      */
     fun save(specimen: Specimen) {
         // could also update UI with observable.
-        firestore.collection("specimens")
-            .document()
-            .set(specimen)
-            .addOnSuccessListener {
+        val document = firestore.collection("specimens").document()
+        val set = document.set(specimen)
+        set.addOnSuccessListener {
+                val id = document.id
                 Log.d("Firebase", "Document saved.")
+
             }
             .addOnFailureListener {
                 Log.d("Firebase", "Something went wrong.")
