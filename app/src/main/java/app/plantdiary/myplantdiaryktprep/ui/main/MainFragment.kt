@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
 import app.plantdiary.myplantdiaryktprep.R
+import app.plantdiary.myplantdiaryktprep.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
 import java.io.IOException
@@ -69,6 +70,22 @@ class MainFragment : Fragment() {
         btnLogon.setOnClickListener {
             prepOpenGallery()
         }
+
+        btnSave.setOnClickListener {
+            saveSpecimen()
+        }
+    }
+
+    private fun saveSpecimen() {
+        val specimen = Specimen()
+        specimen.plantName = actPlants.text.toString()
+        specimen.description = txtDescription.text.toString()
+        specimen.latitude = lblLatitudeValue.text.toString()
+        specimen.longitude = lblLongitudeValue.text.toString()
+        specimen.plantID = 83
+        specimen.specimenID = 1
+
+        viewModel.save(specimen)
     }
 
     private fun prepOpenGallery() {

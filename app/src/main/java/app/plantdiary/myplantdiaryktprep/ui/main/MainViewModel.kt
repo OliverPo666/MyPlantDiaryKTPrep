@@ -1,12 +1,16 @@
 package app.plantdiary.myplantdiaryktprep.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.RetrofitClientInstance
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
 import app.plantdiary.myplantdiaryktprep.dto.Plant
+import app.plantdiary.myplantdiaryktprep.dto.Specimen
 import app.plantdiary.myplantdiaryktprep.service.PlantService
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,9 +21,12 @@ class MainViewModel()  : ViewModel() {
     // livedata goes in here for plants.
     private var _plants = MutableLiveData<ArrayList<Plant>>()
     private var _plantsArray:ArrayList<Plant>? = ArrayList<Plant>()
+    private lateinit var firestore: FirebaseFirestore
+
     // use an initialization (constructor or static) to kick of plant JSON unmarshalling process with Retrofit.
     init {
-       // populatePlants()
+        firestore = FirebaseFirestore.getInstance()
+        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
     }
 
     private fun populatePlants() {
@@ -37,8 +44,7 @@ class MainViewModel()  : ViewModel() {
             }
 
             override fun onFailure(call: Call<ArrayList<Plant>>, t: Throwable) {
-                val i = 1 + 1;
-                val j = 2 + 2;
+                Log.e("Parse JSON", "Something went wrong")
             }
         })
 
@@ -46,6 +52,22 @@ class MainViewModel()  : ViewModel() {
 
     fun fetchPlants(plantName:String) {
         plantService.fetchPlants(plantName)
+    }
+
+    /**
+     * Save to Firebase.
+     */
+    fun save(specimen: Specimen) {
+        // could also update UI with observable.
+        firestore.collection("specimens")
+            .document()
+            .set(specimen)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Document saved.")
+            }
+            .addOnFailureListener {
+                Log.d("Firebase", "Something went wrong.")
+            }
     }
 
     var plants:MutableLiveData<ArrayList<Plant>>
