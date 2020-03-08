@@ -23,7 +23,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
 import app.plantdiary.myplantdiaryktprep.R
+import app.plantdiary.myplantdiaryktprep.dto.Plant
 import app.plantdiary.myplantdiaryktprep.dto.Specimen
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
 import java.io.IOException
@@ -43,7 +47,12 @@ class MainFragment : Fragment() {
     private val CAMERA_REQUEST_CODE = 1999
     private val SAVE_IMAGE_REQUEST_CODE=2000
     private val IMAGE_GALLERY_REQUEST_CODE=2001
+    private val AUTH_REQUEST_CODE = 2002
     private lateinit var currentPhotoPath: String
+    private lateinit var _plants : ArrayList<Plant>
+    private var plantId = 0;
+    private var user: FirebaseUser? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +68,17 @@ class MainFragment : Fragment() {
         viewModel.plants.observe(this, Observer {
             // do something here to wire up the objects, from the feed of JSON data, to be the autocomplete's data source.
             plants ->  actPlants.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, plants))
-            var i = 1 + 1
+            _plants = plants
             prepRequestLocationUpdates()
+        })
+         actPlants.setOnItemClickListener { parent, view, position, id ->
+            var selectedPlant = parent.getItemAtPosition(position) as Plant
+             if (selectedPlant != null) {
+                 plantId = selectedPlant.plantId
+             }
+         }
+        viewModel.specimens.observe(this, Observer {
+            specimens -> spnSpecimens.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens))
         })
 
         btnTakePhoto.setOnClickListener{
@@ -68,12 +86,23 @@ class MainFragment : Fragment() {
         }
 
         btnLogon.setOnClickListener {
-            prepOpenGallery()
+            logon()
+            // prepOpenGallery()
         }
 
         btnSave.setOnClickListener {
             saveSpecimen()
         }
+    }
+
+    private fun logon() {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+        startActivityForResult(
+            AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH_REQUEST_CODE
+        )
     }
 
     private fun saveSpecimen() {
@@ -82,8 +111,8 @@ class MainFragment : Fragment() {
         specimen.description = txtDescription.text.toString()
         specimen.latitude = lblLatitudeValue.text.toString()
         specimen.longitude = lblLongitudeValue.text.toString()
-        specimen.plantID = 83
-        specimen.specimenID = 1
+        specimen.plantID = plantId
+        specimen.specimenID = "1"
 
         viewModel.save(specimen)
     }
@@ -145,6 +174,13 @@ class MainFragment : Fragment() {
                 val source = ImageDecoder.createSource(activity!!.contentResolver, selectedImage!!)
                 val bitmap = ImageDecoder.decodeBitmap(source)
                 imgPlant.setImageBitmap(bitmap)
+            } else if (requestCode == AUTH_REQUEST_CODE) {
+                user = FirebaseAuth.getInstance().currentUser
+                var i = 1 + 1
+            }
+        } else {
+            if (requestCode == AUTH_REQUEST_CODE) {
+                Toast.makeText(context!!, "Kan't logon", Toast.LENGTH_LONG).show()
             }
         }
     }

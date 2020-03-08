@@ -1,5 +1,6 @@
 package app.plantdiary.myplantdiaryktprep.ui.main
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,11 +23,58 @@ class MainViewModel()  : ViewModel() {
     private var _plants = MutableLiveData<ArrayList<Plant>>()
     private var _plantsArray:ArrayList<Plant>? = ArrayList<Plant>()
     private lateinit var firestore: FirebaseFirestore
+    private var _specimens = MutableLiveData<ArrayList<Specimen>>()
+
 
     // use an initialization (constructor or static) to kick of plant JSON unmarshalling process with Retrofit.
     init {
         firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
+        populatePlants()
+        readSpecimens()
+        listenToSpecimens()
+    }
+
+    private fun listenToSpecimens() {
+        firestore.collection("specimens").addSnapshotListener{
+            snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                val allSpecimens = ArrayList<Specimen>()
+                val documents = snapshot.documents
+                documents.forEach {
+                    var id = it.id
+                    val specimen = it.toObject(Specimen::class.java)
+                    if (specimen != null) {
+                        specimen.specimenID = it.id
+                        allSpecimens.add(specimen!!)
+                    }
+                }
+                _specimens.value = allSpecimens
+            }
+        }
+    }
+
+    private fun readSpecimens() {
+        firestore.collection("specimens").get()
+            .addOnSuccessListener {
+                document -> try {
+                    if (document != null) {
+                        val specimens = document.toObjects(Specimen::class.java)
+                    } else {
+                        Log.e(TAG, "No data returned from Firestore.")
+                    }
+
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Exception while retreiving Firestore data: $ex")
+                }
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Exception while retreiving Firestore data: $it")
+            }
     }
 
     private fun populatePlants() {
@@ -78,4 +126,8 @@ class MainViewModel()  : ViewModel() {
     var plantsArray:ArrayList<Plant>?
         get() {return _plantsArray}
         set(value) {_plantsArray  = value}
+
+    var specimens:MutableLiveData<ArrayList<Specimen>>
+        get() { return _specimens}
+        set(value) {_specimens = value}
 }
