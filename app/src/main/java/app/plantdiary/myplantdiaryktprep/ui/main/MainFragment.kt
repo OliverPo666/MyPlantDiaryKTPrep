@@ -7,6 +7,7 @@ import android.content.Intent.EXTRA_MIME_TYPES
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
@@ -23,6 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
 import app.plantdiary.myplantdiaryktprep.R
+import app.plantdiary.myplantdiaryktprep.dto.Photo
 import app.plantdiary.myplantdiaryktprep.dto.Plant
 import app.plantdiary.myplantdiaryktprep.dto.Specimen
 import com.firebase.ui.auth.AuthUI
@@ -52,6 +54,8 @@ class MainFragment : Fragment() {
     private lateinit var _plants : ArrayList<Plant>
     private var plantId = 0;
     private var user: FirebaseUser? = null
+    private var photoURI : Uri? = null
+    private var specimen = Specimen()
 
 
     override fun onCreateView(
@@ -106,7 +110,6 @@ class MainFragment : Fragment() {
     }
 
     private fun saveSpecimen() {
-        val specimen = Specimen()
         specimen.plantName = actPlants.text.toString()
         specimen.description = txtDescription.text.toString()
         specimen.latitude = lblLatitudeValue.text.toString()
@@ -115,13 +118,15 @@ class MainFragment : Fragment() {
         specimen.specimenID = "1"
 
         viewModel.save(specimen)
+
+        // new specimen for the next go.
+        specimen = Specimen()
+
     }
 
     private fun prepOpenGallery() {
         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
             type = "image/*"
-//            val mimeTypes = arrayOf("image/*")
-//            putExtra(EXTRA_MIME_TYPES, mimeTypes)
             startActivityForResult(this, IMAGE_GALLERY_REQUEST_CODE)
         }
     }
@@ -149,7 +154,7 @@ class MainFragment : Fragment() {
                 startActivityForResult(takePictureIntent, IMAGE_CAPTURE_REQUEST_CODE)
             } else {
                 photoFile?.also {
-                    val photoURI = FileProvider.getUriForFile(
+                    photoURI = FileProvider.getUriForFile(
                         activity!!.applicationContext,
                         "com.example.android.fileprovider",
                         it
@@ -169,6 +174,8 @@ class MainFragment : Fragment() {
                 imgPlant.setImageBitmap(imageBitmap)
             } else if (requestCode == SAVE_IMAGE_REQUEST_CODE) {
                 Toast.makeText(context, "Image Saved", Toast.LENGTH_LONG).show()
+                var myPhoto = Photo(localUri = photoURI.toString(), dateTaken = Date())
+                specimen.photos.add(myPhoto)
             } else if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
                 val selectedImage = data!!.data
                 val source = ImageDecoder.createSource(activity!!.contentResolver, selectedImage!!)
