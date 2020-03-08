@@ -56,6 +56,8 @@ class MainFragment : Fragment() {
     private var user: FirebaseUser? = null
     private var photoURI : Uri? = null
     private var specimen = Specimen()
+    private var photos = ArrayList<Photo>()
+
 
 
     override fun onCreateView(
@@ -110,6 +112,11 @@ class MainFragment : Fragment() {
     }
 
     private fun saveSpecimen() {
+        if (user == null) {
+            logon()
+        }
+        user ?: return
+
         specimen.plantName = actPlants.text.toString()
         specimen.description = txtDescription.text.toString()
         specimen.latitude = lblLatitudeValue.text.toString()
@@ -117,10 +124,11 @@ class MainFragment : Fragment() {
         specimen.plantID = plantId
         specimen.specimenID = "1"
 
-        viewModel.save(specimen)
+        viewModel.save(specimen, photos, user!!)
 
         // new specimen for the next go.
         specimen = Specimen()
+        photos = ArrayList<Photo>()
 
     }
 
@@ -175,7 +183,7 @@ class MainFragment : Fragment() {
             } else if (requestCode == SAVE_IMAGE_REQUEST_CODE) {
                 Toast.makeText(context, "Image Saved", Toast.LENGTH_LONG).show()
                 var myPhoto = Photo(localUri = photoURI.toString(), dateTaken = Date())
-                specimen.photos.add(myPhoto)
+                photos.add(myPhoto)
             } else if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
                 val selectedImage = data!!.data
                 val source = ImageDecoder.createSource(activity!!.contentResolver, selectedImage!!)
