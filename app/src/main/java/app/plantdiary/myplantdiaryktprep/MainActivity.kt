@@ -2,6 +2,8 @@ package app.plantdiary.myplantdiaryktprep
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
+import androidx.core.view.MotionEventCompat
 import app.plantdiary.myplantdiaryktprep.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
@@ -15,5 +17,6 @@ class MainActivity : AppCompatActivity() {
                 .commitNow()
         }
     }
+
 
 }
