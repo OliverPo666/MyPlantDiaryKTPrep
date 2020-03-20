@@ -18,5 +18,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val action = event?.actionMasked
+
+        return when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                true
+            }
+            MotionEvent.ACTION_UP -> {
+                true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                true
+            }
+            MotionEvent.ACTION_OUTSIDE -> {
+                true
+            }
+
+            else -> super.onTouchEvent(event)
+        }
+
+
+
+    }
+
 
 }
