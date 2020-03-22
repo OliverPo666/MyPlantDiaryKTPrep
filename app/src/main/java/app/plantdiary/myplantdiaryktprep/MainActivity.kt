@@ -7,19 +7,30 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.MotionEventCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import app.plantdiary.myplantdiaryktprep.ui.main.EventFragment
 import app.plantdiary.myplantdiaryktprep.ui.main.MainFragment
+import app.plantdiary.myplantdiaryktprep.ui.main.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var detector : GestureDetectorCompat
+    private lateinit var mainFragment : MainFragment
+    private lateinit var eventFragment: EventFragment
+    private lateinit var activeFragment : Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+        val mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        mainFragment = MainFragment.newInstance()
+        eventFragment = EventFragment.newInstance()
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
+                .replace(R.id.container, mainFragment)
                 .commitNow()
+            activeFragment = mainFragment
         }
 
         detector = GestureDetectorCompat(this, DiaryGestureListener())
@@ -83,10 +94,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSwipeLeft() {
         Toast.makeText(this, "Swipe Left", Toast.LENGTH_LONG).show()
+        if (activeFragment == eventFragment) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, mainFragment)
+                .commitNow()
+        }
     }
 
     internal fun onSwipeRight() {
         Toast.makeText(this, "Swipe Right", Toast.LENGTH_LONG).show()
+        if (activeFragment == mainFragment) {
+            mainFragment.storeSpecimen()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, eventFragment)
+                .commitNow()
+            activeFragment = eventFragment
+        }
+
     }
 
 }

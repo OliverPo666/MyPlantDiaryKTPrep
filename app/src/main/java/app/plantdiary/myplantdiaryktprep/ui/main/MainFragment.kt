@@ -3,7 +3,6 @@ package app.plantdiary.myplantdiaryktprep.ui.main
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.Intent.EXTRA_MIME_TYPES
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -21,7 +20,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
 import app.plantdiary.myplantdiaryktprep.R
 import app.plantdiary.myplantdiaryktprep.dto.Photo
@@ -69,7 +67,10 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        // viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        activity.let {
+            viewModel = ViewModelProviders.of(it!!).get(MainViewModel::class.java)
+        }
         // TODO: Use the ViewModel
         viewModel.plants.observe(this, Observer {
             // do something here to wire up the objects, from the feed of JSON data, to be the autocomplete's data source.
@@ -96,7 +97,7 @@ class MainFragment : Fragment() {
             // prepOpenGallery()
         }
 
-        btnSave.setOnClickListener {
+        btnSaveEvent.setOnClickListener {
             saveSpecimen()
         }
     }
@@ -117,19 +118,22 @@ class MainFragment : Fragment() {
         }
         user ?: return
 
-        specimen.plantName = actPlants.text.toString()
-        specimen.description = txtDescription.text.toString()
-        specimen.latitude = lblLatitudeValue.text.toString()
-        specimen.longitude = lblLongitudeValue.text.toString()
-        specimen.plantID = plantId
-        specimen.specimenID = "1"
-
         viewModel.save(specimen, photos, user!!)
 
         // new specimen for the next go.
         specimen = Specimen()
         photos = ArrayList<Photo>()
 
+    }
+
+    internal fun storeSpecimen() {
+        specimen.plantName = actPlants.text.toString()
+        specimen.description = txtDescription.text.toString()
+        specimen.latitude = lblLatitudeValue.text.toString()
+        specimen.longitude = lblLongitudeValue.text.toString()
+        specimen.plantID = plantId
+        specimen.specimenID = "1"
+        viewModel.specimen = specimen
     }
 
     private fun prepOpenGallery() {

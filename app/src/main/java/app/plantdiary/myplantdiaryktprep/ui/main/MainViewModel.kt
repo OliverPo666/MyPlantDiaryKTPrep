@@ -29,6 +29,8 @@ class MainViewModel()  : ViewModel() {
     private lateinit var firestore: FirebaseFirestore
     private var _specimens = MutableLiveData<ArrayList<Specimen>>()
     private var storageReference = FirebaseStorage.getInstance().getReference()
+    private lateinit var _specimen: Specimen
+
 
     // use an initialization (constructor or static) to kick of plant JSON unmarshalling process with Retrofit.
     init {
@@ -180,4 +182,8 @@ class MainViewModel()  : ViewModel() {
     var specimens:MutableLiveData<ArrayList<Specimen>>
         get() { return _specimens}
         set(value) {_specimens = value}
+
+    var specimen: Specimen
+        get() { return _specimen}
+        set(value) {_specimen = value}
 }
