@@ -72,9 +72,9 @@ class MainActivity : AppCompatActivity() {
                 // up or down
                 if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
-                        this@MainActivity.onSwipeBottom()
-                    } else {
                         this@MainActivity.onSwipeTop()
+                    } else {
+                        this@MainActivity.onSwipeBottom()
                     }
                 }
             }
