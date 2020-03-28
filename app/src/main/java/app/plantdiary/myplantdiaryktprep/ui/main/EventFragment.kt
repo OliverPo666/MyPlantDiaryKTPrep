@@ -18,7 +18,7 @@ import app.plantdiary.myplantdiaryktprep.dto.Specimen
 import kotlinx.android.synthetic.main.event_fragment.*
 import kotlinx.android.synthetic.main.rowlayout.*
 
-class EventFragment : Fragment() {
+class EventFragment : DiaryFragment() {
 
     companion object {
         fun newInstance() = EventFragment()
