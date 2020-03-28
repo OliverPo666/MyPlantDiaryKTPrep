@@ -145,8 +145,12 @@ class MainFragment : DiaryFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-
-            if (requestCode == IMAGE_CAPTURE_REQUEST_CODE) {
+            if (requestCode == SAVE_IMAGE_REQUEST_CODE) {
+                Toast.makeText(context, "Image Saved", Toast.LENGTH_LONG).show()
+                var myPhoto = Photo(localUri = photoURI.toString(), dateTaken = Date())
+                photos.add(myPhoto)
+                photoURI = null
+            } else if (requestCode == IMAGE_CAPTURE_REQUEST_CODE) {
                 val imageBitmap = data!!.extras!!.get("data") as Bitmap
                 imgPlant.setImageBitmap(imageBitmap)
             } else if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
@@ -188,6 +192,5 @@ class MainFragment : DiaryFragment() {
          }
 
     }
-
 
 }

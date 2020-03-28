@@ -49,14 +49,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtDate" />
 
-    <ImageButton
-        android:id="@+id/btnSaveEvent"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/llButtons"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_save"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/edtDescription">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_back" />
+
+        <ImageButton
+            android:id="@+id/btnSaveEvent"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save"
+            />
+
+        <ImageButton
+            android:id="@+id/btnTakeEventPhoto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_photo" />
+
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcyEvents"
@@ -66,5 +91,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSaveEvent" />
+        app:layout_constraintTop_toBottomOf="@+id/llButtons" />
 </androidx.constraintlayout.widget.ConstraintLayout>
