@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.RetrofitClientInstance
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
+import app.plantdiary.myplantdiaryktprep.dto.Event
 import app.plantdiary.myplantdiaryktprep.dto.Photo
 import app.plantdiary.myplantdiaryktprep.dto.Plant
 import app.plantdiary.myplantdiaryktprep.dto.Specimen
@@ -169,6 +170,21 @@ class MainViewModel()  : ViewModel() {
             .collection("photos")
             .document(photo.id)
             .set(photo)
+    }
+
+    /**
+     *
+     */
+    fun save(event: Event) {
+        val collection = firestore.collection("specimens").document(specimen.specimenID).collection("events")
+        val task = collection.add(event)
+        task.addOnSuccessListener {
+            event.id = it.id
+        }
+        task.addOnFailureListener{
+            var message = it.message
+            var i = 1 + 1
+        }
     }
 
     var plants:MutableLiveData<ArrayList<Plant>>

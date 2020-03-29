@@ -37,7 +37,6 @@ class EventFragment : DiaryFragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var specimen: Specimen
-    private var localPhotoUri : String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,8 +83,11 @@ class EventFragment : DiaryFragment() {
         event.type = actEventType.toString()
         event.description = edtDescription.text.toString()
         event.quantity = edtQuantity.text.toString().toDoubleOrNull() ?: 0.0
-        event.localPhotoUri = photoURI.toString() ?: ""
+        if (photoURI != null) {
+            event.localPhotoUri = photoURI.toString()
+        }
         specimen.events.add(event)
+        viewModel.save(event)
         clearAll()
         rcyEvents.adapter?.notifyDataSetChanged()
     }

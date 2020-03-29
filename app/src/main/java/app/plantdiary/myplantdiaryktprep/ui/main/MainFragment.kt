@@ -94,12 +94,12 @@ class MainFragment : DiaryFragment() {
         )
     }
 
-    private fun saveSpecimen() {
+    internal fun saveSpecimen() {
         if (user == null) {
             logon()
         }
-        user ?: return
-
+        // user ?: return
+        storeSpecimen()
         viewModel.save(specimen, photos, user!!)
 
         // new specimen for the next go.

@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     internal fun onSwipeRight() {
         Toast.makeText(this, "Swipe Right", Toast.LENGTH_LONG).show()
         if (activeFragment == mainFragment) {
-            mainFragment.storeSpecimen()
+            mainFragment.saveSpecimen()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, eventFragment)
                 .commitNow()
