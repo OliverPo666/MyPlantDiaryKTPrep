@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +19,20 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.plantdiary.myplantdiaryktprep.LocationViewModel
+import app.plantdiary.myplantdiaryktprep.MainActivity
 import app.plantdiary.myplantdiaryktprep.R
+import app.plantdiary.myplantdiaryktprep.dto.Event
 import app.plantdiary.myplantdiaryktprep.dto.Photo
 import app.plantdiary.myplantdiaryktprep.dto.Plant
 import app.plantdiary.myplantdiaryktprep.dto.Specimen
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.event_fragment.*
 import kotlinx.android.synthetic.main.main_fragment.*
+import kotlinx.android.synthetic.main.main_fragment.btnSaveEvent
 import java.util.*
 
 class MainFragment : DiaryFragment() {
@@ -40,6 +47,7 @@ class MainFragment : DiaryFragment() {
     private lateinit var _plants : ArrayList<Plant>
     private var plantId = 0;
     private var specimen = Specimen()
+    private var _events : ArrayList<Event> = ArrayList<Event>()
 
 
     override fun onCreateView(
@@ -62,7 +70,19 @@ class MainFragment : DiaryFragment() {
             _plants = plants
             prepRequestLocationUpdates()
         })
-         actPlants.setOnItemClickListener { parent, view, position, id ->
+        viewModel.events.observe(this, Observer {
+            // update event collection and inform adapter.
+            events ->
+            _events.removeAll(_events)
+            _events.addAll(events)
+//            events.forEach {
+//                _events.add(it)
+//            }
+//            // or _events = events
+            rcyEventsForSpecimens.adapter!!.notifyDataSetChanged()
+        })
+
+        actPlants.setOnItemClickListener { parent, view, position, id ->
             var selectedPlant = parent.getItemAtPosition(position) as Plant
              if (selectedPlant != null) {
                  plantId = selectedPlant.plantId
@@ -127,6 +147,14 @@ class MainFragment : DiaryFragment() {
         btnSaveEvent.setOnClickListener {
             saveSpecimen()
         }
+        btnRightArrow.setOnClickListener {
+            (activity as MainActivity).onSwipeRight()
+        }
+        rcyEventsForSpecimens.hasFixedSize()
+        rcyEventsForSpecimens.layoutManager = LinearLayoutManager(context)
+        rcyEventsForSpecimens.itemAnimator = DefaultItemAnimator()
+        rcyEventsForSpecimens.adapter = EventsAdapter(_events, R.layout.rowlayout)
+
     }
 
     private fun logon() {
@@ -197,12 +225,10 @@ class MainFragment : DiaryFragment() {
                 photoURI = null
             } else if (requestCode == IMAGE_CAPTURE_REQUEST_CODE) {
                 val imageBitmap = data!!.extras!!.get("data") as Bitmap
-                imgPlant.setImageBitmap(imageBitmap)
             } else if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
                 val selectedImage = data!!.data
                 val source = ImageDecoder.createSource(activity!!.contentResolver, selectedImage!!)
                 val bitmap = ImageDecoder.decodeBitmap(source)
-                imgPlant.setImageBitmap(bitmap)
             } else if (requestCode == AUTH_REQUEST_CODE) {
                 user = FirebaseAuth.getInstance().currentUser
                 var i = 1 + 1
