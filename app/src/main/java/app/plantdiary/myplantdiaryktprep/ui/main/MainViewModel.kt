@@ -39,7 +39,7 @@ class MainViewModel()  : ViewModel() {
     init {
         firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
-        populatePlants()
+        // populatePlants()
         readSpecimens()
         listenToSpecimens()
     }

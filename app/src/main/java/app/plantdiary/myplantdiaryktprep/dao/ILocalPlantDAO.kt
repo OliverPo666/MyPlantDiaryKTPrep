@@ -1,5 +1,6 @@
 package app.plantdiary.myplantdiaryktprep.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import app.plantdiary.myplantdiaryktprep.dto.Plant
 
@@ -7,7 +8,7 @@ import app.plantdiary.myplantdiaryktprep.dto.Plant
 interface ILocalPlantDAO {
 
     @Query("SELECT * FROM plant")
-    fun getAllPlants(): List<Plant>
+    fun getAllPlants(): LiveData<List<Plant>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(plants: ArrayList<Plant>)

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
+import app.plantdiary.myplantdiaryktprep.dao.ILocalPlantDAO
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
 import app.plantdiary.myplantdiaryktprep.dao.PlantDatabase
 import app.plantdiary.myplantdiaryktprep.dto.Plant
@@ -62,4 +63,13 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
         }
     }
+
+    internal fun getLocalPlantDAO() : ILocalPlantDAO {
+        val db =
+            Room.databaseBuilder(getApplication(), PlantDatabase::class.java, "diary").build()
+
+        val localPlantDAO = db.localPlantDAO()
+        return localPlantDAO
+    }
+
 }
