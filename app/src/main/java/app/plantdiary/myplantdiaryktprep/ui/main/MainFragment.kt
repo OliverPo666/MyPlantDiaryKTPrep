@@ -75,10 +75,6 @@ class MainFragment : DiaryFragment() {
             events ->
             _events.removeAll(_events)
             _events.addAll(events)
-//            events.forEach {
-//                _events.add(it)
-//            }
-//            // or _events = events
             rcyEventsForSpecimens.adapter!!.notifyDataSetChanged()
         })
 
