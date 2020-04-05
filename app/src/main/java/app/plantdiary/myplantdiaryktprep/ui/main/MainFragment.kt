@@ -131,6 +131,8 @@ class MainFragment : DiaryFragment() {
             specimens -> spnSpecimens.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens))
         })
 
+        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel::class.java)
+
         btnTakePhoto.setOnClickListener{
             prepTakePhoto()
         }
@@ -204,7 +206,7 @@ class MainFragment : DiaryFragment() {
     }
 
     private fun requestLocationUpdates() {
-        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel::class.java)
+
         locationViewModel.getLocationData().observe(this, Observer {
             lblLatitudeValue.text = it.latitude
             lblLongitudeValue.text = it.longitude
