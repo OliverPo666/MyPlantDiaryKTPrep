@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import app.plantdiary.myplantdiaryktprep.RetrofitClientInstance
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
+import app.plantdiary.myplantdiaryktprep.dto.Event
 import app.plantdiary.myplantdiaryktprep.dto.Photo
 import app.plantdiary.myplantdiaryktprep.dto.Plant
 import app.plantdiary.myplantdiaryktprep.dto.Specimen
@@ -29,6 +30,9 @@ class MainViewModel()  : ViewModel() {
     private lateinit var firestore: FirebaseFirestore
     private var _specimens = MutableLiveData<ArrayList<Specimen>>()
     private var storageReference = FirebaseStorage.getInstance().getReference()
+    private lateinit var _specimen: Specimen
+    private var _events = MutableLiveData<List<Event>>()
+
 
     // use an initialization (constructor or static) to kick of plant JSON unmarshalling process with Retrofit.
     init {
@@ -169,15 +173,46 @@ class MainViewModel()  : ViewModel() {
             .set(photo)
     }
 
+    /**
+     *
+     */
+    fun save(event: Event) {
+        val collection = firestore.collection("specimens").document(specimen.specimenID).collection("events")
+        val task = collection.add(event)
+        task.addOnSuccessListener {
+            event.id = it.id
+        }
+        task.addOnFailureListener{
+            var message = it.message
+            var i = 1 + 1
+        }
+    }
+
+    fun fetchEvents() {
+        var eventsCollection = firestore.collection("specimens")
+            .document(specimen.specimenID)
+            .collection("events")
+        eventsCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            // querySnapshot?.forEach {  }
+            var events = querySnapshot?.toObjects(Event::class.java)
+            _events.postValue(events)
+
+        }
+    }
+
     var plants:MutableLiveData<ArrayList<Plant>>
         get() { return _plants}
         set(value) {_plants = value}
 
-    var plantsArray:ArrayList<Plant>?
-        get() {return _plantsArray}
-        set(value) {_plantsArray  = value}
-
     var specimens:MutableLiveData<ArrayList<Specimen>>
         get() { return _specimens}
         set(value) {_specimens = value}
+
+    var specimen: Specimen
+        get() { return _specimen}
+        set(value) {_specimen = value}
+
+    var events : MutableLiveData<List<Event>>
+        get() { return _events}
+        set(value) { _events = value}
 }
