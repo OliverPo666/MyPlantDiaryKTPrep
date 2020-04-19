@@ -107,7 +107,7 @@ class MainViewModel()  : ViewModel() {
     }
 
     fun fetchPlants(plantName:String) {
-        plantService.fetchPlants(plantName)
+     //   plantService.fetchPlants(plantName)
     }
 
     /**

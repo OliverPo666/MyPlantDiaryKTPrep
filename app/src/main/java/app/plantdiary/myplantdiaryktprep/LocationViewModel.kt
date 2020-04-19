@@ -9,7 +9,9 @@ import app.plantdiary.myplantdiaryktprep.dao.ILocalPlantDAO
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
 import app.plantdiary.myplantdiaryktprep.dao.PlantDatabase
 import app.plantdiary.myplantdiaryktprep.dto.Plant
+import app.plantdiary.myplantdiaryktprep.service.PlantService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -18,11 +20,14 @@ import retrofit2.Response
 
 class LocationViewModel(application: Application) : AndroidViewModel(application) {
 
+    private var plantService = PlantService()
     private val locationData = LocationLiveData(application)
     fun getLocationData() = locationData;
 
     init {
-        populatePlants(application)
+        viewModelScope.launch {
+            plantService.fetchPlants(application, "e")
+        }
     }
 
     private fun populatePlants(application: Application) {
@@ -56,6 +61,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
                 val localPlantDAO = db.localPlantDAO()
                 localPlantDAO.insertAll(plants)
+                delay(60000)
             } catch (e:  Exception ) {
                 var foo = e.message
             }
