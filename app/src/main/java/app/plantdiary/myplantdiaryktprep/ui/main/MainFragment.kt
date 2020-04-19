@@ -44,7 +44,7 @@ class MainFragment : DiaryFragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var locationViewModel: LocationViewModel
     private val LOCATION_REQUEST_CODE = 1997
-    private lateinit var _plants : ArrayList<Plant>
+    private lateinit var _plants : List<Plant>
     private var plantId = 0;
     private var specimen = Specimen()
     private var _events : ArrayList<Event> = ArrayList<Event>()
@@ -63,8 +63,9 @@ class MainFragment : DiaryFragment() {
         activity.let {
             viewModel = ViewModelProviders.of(it!!).get(MainViewModel::class.java)
         }
-        // TODO: Use the ViewModel
-        viewModel.plants.observe(this, Observer {
+        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel::class.java)
+        var localPlantDAO  = locationViewModel.getLocalPlantDAO()
+        localPlantDAO.getAllPlants().observe( this, Observer {
             // do something here to wire up the objects, from the feed of JSON data, to be the autocomplete's data source.
             plants ->  actPlants.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, plants))
             _plants = plants
@@ -130,6 +131,8 @@ class MainFragment : DiaryFragment() {
         viewModel.specimens.observe(this, Observer {
             specimens -> spnSpecimens.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens))
         })
+
+
 
         btnTakePhoto.setOnClickListener{
             prepTakePhoto()
@@ -204,7 +207,7 @@ class MainFragment : DiaryFragment() {
     }
 
     private fun requestLocationUpdates() {
-        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel::class.java)
+
         locationViewModel.getLocationData().observe(this, Observer {
             lblLatitudeValue.text = it.latitude
             lblLongitudeValue.text = it.longitude

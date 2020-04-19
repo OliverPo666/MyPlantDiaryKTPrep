@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.Room
 import app.plantdiary.myplantdiaryktprep.RetrofitClientInstance
 import app.plantdiary.myplantdiaryktprep.dao.IPlantDAO
 import app.plantdiary.myplantdiaryktprep.dto.Event
@@ -38,7 +39,7 @@ class MainViewModel()  : ViewModel() {
     init {
         firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
-        populatePlants()
+        // populatePlants()
         readSpecimens()
         listenToSpecimens()
     }
@@ -86,7 +87,6 @@ class MainViewModel()  : ViewModel() {
     }
 
     private fun populatePlants() {
-        // TODO move this to a specialized class, perhaps in service or DAO layer.
         val service = RetrofitClientInstance.retrofitInstance?.create(IPlantDAO::class.java)
         val call = service?.getAllPlants()
         call?.enqueue(object: Callback<ArrayList<Plant>> {
@@ -107,7 +107,7 @@ class MainViewModel()  : ViewModel() {
     }
 
     fun fetchPlants(plantName:String) {
-        plantService.fetchPlants(plantName)
+     //   plantService.fetchPlants(plantName)
     }
 
     /**
