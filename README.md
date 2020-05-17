@@ -1,5 +1,19 @@
-# MyPlantDiaryKTPrep
-Preparations for Android app development with Kotlin, Live Data, Jetpack.
+# Requirement 100: Search for Plants
 
-![FlashcardLogo512](https://user-images.githubusercontent.com/2224876/82159033-9d7dcc80-9859-11ea-9ef7-6bdb2e125b5f.png)
+## Scenario  
+
+As a user interested in plants, I want to be able to search plants based on any part of the name: genus, species, cultivar, or common name.
+
+## Dependencies  
+
+Plant search data are available and accessible.
+
+## Assumptions
+
+Scientific names are stated in Latin.  
+
+Common names are stated in English.
+
+## Example  
+
 
